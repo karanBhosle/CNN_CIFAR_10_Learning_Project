@@ -1,71 +1,79 @@
-# **CNN_CIFR_10 - Image Classification using CIFAR-10**
+# CNN_CIFR_10 — Image Classification on CIFAR-10
 
-### **Project Overview:**
-This project implements a Convolutional Neural Network (CNN) model for image classification using the CIFAR-10 dataset. The model classifies images into 10 categories (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck). The code includes data preprocessing, model building, training, evaluation, and visualization.
+A hands-on Jupyter notebook that trains a convolutional neural network (CNN) on the [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) dataset. The notebook is structured for learning: **each code cell includes short “Learning” comments** that explain why that step matters, not just what the code does.
 
-### **Key Features:**
-- **Data Visualization**: Displays a sample of images from the CIFAR-10 training set with labels.
-- **Model Architecture**: The CNN model consists of convolutional layers for feature extraction and dense layers for classification.
-- **Prediction and Visualization**: Visualizes the predictions on sample test images.
-- **Model Evaluation**: Evaluates the model on the test set and prints accuracy.
+## Project overview
 
-### **Technologies Used:**
-- **TensorFlow**: For building and training the CNN model.
-- **Keras**: For simplifying the neural network layers and model building.
-- **NumPy**: For numerical operations.
-- **Matplotlib**: For data visualization.
-- **CIFAR-10 Dataset**: A collection of 60,000 32x32 color images in 10 classes, used for training and testing.
+CIFAR-10 contains 60,000 color images (32×32) in 10 classes: airplane, automobile, bird, cat, deer, dog, frog, horse, ship, and truck. This project covers:
 
-### **Getting Started:**
-1. **Install Dependencies**:
-   Install the necessary Python packages by running the following command:
+- Loading and exploring the dataset  
+- Preprocessing (scaling and one-hot labels)  
+- Building a small CNN in Keras  
+- Training with validation split  
+- Evaluating on the test set and visualizing predictions  
+
+## Notebook walkthrough
+
+| Step | Topic | What you learn |
+|------|--------|----------------|
+| Imports | Libraries | How NumPy, Matplotlib, and Keras fit together for vision workflows |
+| Load data | `cifar10.load_data()` | Train/test split and label format |
+| Shapes | Tensor dimensions | `(N, H, W, C)` for images and `(N, 1)` for labels |
+| Sample label | Indexing | Integer class IDs and `label[i][0]` |
+| Plot grid | EDA | Why you visualize labels before training |
+| Preprocess | `/255` + `to_categorical` | Normalization and matching loss to softmax output |
+| Model | Conv → pool → dense | Feature extraction vs. classification layers |
+| Compile | Adam + cross-entropy | Choosing optimizer, loss, and metrics |
+| Baseline eval | Untrained accuracy | ~10% random baseline for 10 classes |
+| Train | `fit()` | Epochs, batch size, and `validation_split` |
+| Test + viz | Metrics + plots | Generalization and qualitative error analysis |
+
+Open the notebook: [`CNN_CIFR_10/CNN_CIFR_10.ipynb`](CNN_CIFR_10/CNN_CIFR_10.ipynb).
+
+## Model architecture (summary)
+
+1. **Conv2D** (32 filters, 3×3, ReLU) + **MaxPooling2D** (2×2)  
+2. **Conv2D** (64 filters, 3×3, ReLU) + **MaxPooling2D** (2×2)  
+3. **Flatten** → **Dense** (64, ReLU) → **Dense** (10, softmax)  
+
+Training defaults in the notebook: **5 epochs**, **batch size 64**, **10% validation split**, **Adam** optimizer, **categorical cross-entropy** loss.
+
+## Getting started
+
+1. **Install dependencies**
+
    ```bash
-   pip install tensorflow numpy matplotlib
+   pip install tensorflow numpy matplotlib jupyter
    ```
 
-2. **Download Dataset**:
-   The CIFAR-10 dataset is automatically loaded from Keras when the script is run.
+2. **Run the notebook**
 
-3. **Run the Code**:
-   Execute the provided Python code in a Jupyter notebook or Google Colab environment.
+   ```bash
+   jupyter notebook CNN_CIFR_10/CNN_CIFR_10.ipynb
+   ```
 
-### **Model Architecture:**
-The CNN model consists of:
-1. **Conv2D Layer (32 filters, 3x3 kernel)**: Extracts features from the input image.
-2. **MaxPooling2D Layer (2x2 pool size)**: Reduces the dimensionality of the feature map.
-3. **Conv2D Layer (64 filters, 3x3 kernel)**: Further extracts complex features.
-4. **MaxPooling2D Layer (2x2 pool size)**: Further reduces the dimensionality.
-5. **Flatten Layer**: Flattens the 3D data into a 1D vector for feeding into fully connected layers.
-6. **Dense Layer (64 neurons)**: A fully connected layer to make decisions based on extracted features.
-7. **Dense Layer (10 neurons with softmax activation)**: The output layer for classifying into one of the 10 classes.
+   CIFAR-10 is downloaded automatically the first time you call `cifar10.load_data()`.
 
-### **Training the Model:**
-- The model is compiled using the **Adam optimizer** and **categorical cross-entropy loss** function.
-- Training is done for **5 epochs** with a **batch size of 64** and **10% validation split**.
+3. **Optional: Google Colab**  
+   Upload the notebook or clone this repo and run cells top to bottom. A GPU runtime speeds up training but is not required for this small model.
 
-### **Evaluating the Model:**
-- The model is evaluated on the test set, and the **accuracy** is printed.
-- A function is created to predict the class of sample test images and visualize the predictions.
+## Key learnings (repository focus)
 
-### **Code Structure:**
-The code is organized into the following sections:
-1. **Import Libraries**: Includes TensorFlow, NumPy, Matplotlib, and Keras.
-2. **Data Loading and Preprocessing**: Loads the CIFAR-10 dataset, reshapes, and normalizes the data.
-3. **Model Building**: Defines the architecture of the CNN model.
-4. **Model Training**: Trains the model on the training data.
-5. **Model Evaluation**: Evaluates the model on the test data and displays the accuracy.
-6. **Prediction and Visualization**: Makes predictions on individual test images and displays them with the predicted and actual labels.
+- **Inspect data first** — shapes, labels, and a few plotted images prevent silent bugs later.  
+- **Preprocessing matches the model** — float pixels in `[0, 1]` and one-hot labels pair with softmax + categorical cross-entropy.  
+- **CNNs exploit spatial structure** — convolutions detect local patterns; pooling reduces spatial size and cost.  
+- **Baseline before training** — untrained test accuracy near 10% confirms the setup before you invest in training time.  
+- **Validate while training** — a held-out slice of training data helps spot overfitting early.  
+- **Metrics + visuals** — accuracy on the test set plus sample predictions give a fuller picture than a single number.  
 
-### **Running the Code:**
-- **Step 1**: Import the necessary libraries and load the CIFAR-10 dataset.
-- **Step 2**: Preprocess the data by reshaping and normalizing the images.
-- **Step 3**: Define the CNN architecture and compile the model.
-- **Step 4**: Train the model on the training data.
-- **Step 5**: Evaluate the model on the test data and display the accuracy.
-- **Step 6**: Visualize the predictions on random test images.
+## Technologies
 
-### **Contact Information:**
-- **Project Developed by**: Karan Bhosle
-- **LinkedIn Profile**: [Karan Bhosle](https://www.linkedin.com/in/karanbhosle/)
+- TensorFlow / Keras  
+- NumPy  
+- Matplotlib  
 
-Feel free to reach out for questions or collaborations!
+## Contact
+
+**Karan Bhosle** — [LinkedIn](https://www.linkedin.com/in/karanbhosle/)
+
+Questions and collaboration welcome.
